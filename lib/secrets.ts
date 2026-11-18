@@ -4,13 +4,13 @@ import { randomBytes, randomUUID } from 'node:crypto';
 /**
  * Stable server secrets for signing the session cookie and the preview URLs.
  *
- * In PRODUCTION set real env vars (COOKIE_SECRET, PREVIEW_SIGNING_SECRET) — on a serverless host
+ * In PRODUCTION set real env vars (COOKIE_SECRET, PREVIEW_SIGNING_SECRET). On a serverless host
  * every invocation is a fresh process, so a random per-process value would make cookies and
- * preview links stop validating between requests. See README.
+ * preview links stop validating between requests. See DEVELOPMENT.md.
  *
  * In DEVELOPMENT (a single long-lived process) we generate a value once and keep it in BOTH
  * `globalThis` and `process.env`. Both are process-global, so every route module instance Next
- * compiles in dev reads the SAME secret — without this, a cookie signed by one route fails to
+ * compiles in dev reads the SAME secret. Without this, a cookie signed by one route fails to
  * verify in another.
  */
 function ensure(name: string, gen: () => string): string {

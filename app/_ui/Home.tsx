@@ -35,7 +35,7 @@ export function Home(props: {
         </h1>
         <p className="lede rise" style={{ animationDelay: '120ms' }}>
           Paste code, drop files, or point Sentinel at a GitHub repo. An AI agent reviews it in an isolated
-          sandbox and hands back a severity‑graded report with exact fixes — without the false refusals.
+          sandbox and hands back a severity-graded report with exact fixes, without the false refusals.
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export function Home(props: {
           <div className="section-h">
             <div>
               <h2>See a finished report</h2>
-              <p>Real Sentinel analyses — open one instantly, no waiting.</p>
+              <p>Real Sentinel analyses. Open one instantly, no waiting.</p>
             </div>
           </div>
           <div className="samples">
@@ -87,9 +87,9 @@ export function Home(props: {
 
       <div className="section-h"><div><h2>Why Sentinel</h2><p>A security reviewer that actually reviews.</p></div></div>
       <div className="features">
-        <div className="feature"><div className="ico"><Brain size={18} /></div><b>Does the work</b><span>Routes to a model that reasons through real exploit paths on code you own — where others hedge or refuse.</span></div>
-        <div className="feature"><div className="ico"><ScanSearch size={18} /></div><b>Severity‑graded findings</b><span>CWE‑mapped issues ranked Critical→Info, each with location, impact and a concrete fix.</span></div>
-        <div className="feature"><div className="ico"><ShieldCheck size={18} /></div><b>Isolated & accountable</b><span>Runs in a HarnessRouter sandbox. Reports open in a locked‑down preview; your scans stay yours.</span></div>
+        <div className="feature"><div className="ico"><Brain size={18} /></div><b>Does the work</b><span>Routes to a model that reasons through real exploit paths on code you own, where others hedge or refuse.</span></div>
+        <div className="feature"><div className="ico"><ScanSearch size={18} /></div><b>Severity-graded findings</b><span>CWE-mapped issues ranked Critical→Info, each with location, impact and a concrete fix.</span></div>
+        <div className="feature"><div className="ico"><ShieldCheck size={18} /></div><b>Isolated & accountable</b><span>Runs in a HarnessRouter sandbox. Reports open in a locked-down preview; your scans stay yours.</span></div>
       </div>
       <div className="trust"><Lock size={13} /> For authorized, defensive and educational security work. Sentinel refuses malware, unauthorized intrusion and mass targeting.</div>
     </div>

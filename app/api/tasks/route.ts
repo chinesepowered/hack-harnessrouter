@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   }
   const text =
     input ||
-    `Audit this repository for security vulnerabilities — rank findings by severity and give concrete fixes: https://github.com/${repo!.owner}/${repo!.repo}`;
+    `Audit this repository for security vulnerabilities. Rank findings by severity and give concrete fixes: https://github.com/${repo!.owner}/${repo!.repo}`;
   const userId = await ensureUserId();
   try {
     const rec = await startTask(userId, text, repo);

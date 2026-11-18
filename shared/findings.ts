@@ -87,7 +87,7 @@ export function severityCounts(f: Finding[]): SeverityCounts {
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
 
 /**
- * 0–100 security score from a severity-weighted penalty with diminishing returns (so a very bad
+ * 0-100 security score from a severity-weighted penalty with diminishing returns (so a very bad
  * codebase still gets an informative number, not a flat 0). Any Critical caps the grade at D.
  */
 export function securityScore(c?: SeverityCounts | null): number {

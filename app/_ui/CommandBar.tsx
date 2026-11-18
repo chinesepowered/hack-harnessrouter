@@ -71,7 +71,7 @@ export function CommandBar({
                 <span className="gh"><GithubMark size={17} /></span>
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <b>{repo.owner}/{repo.repo}</b>{repo.ref && <span className="muted mono"> @ {repo.ref}</span>}
-                  <div className="sub">Public repository — Sentinel will fetch it and audit the source in an isolated sandbox.</div>
+                  <div className="sub">Public repository. Sentinel will fetch it and audit the source in an isolated sandbox.</div>
                 </div>
                 <button className="icon-btn" onClick={onDismissRepo} aria-label="Don't scan this repo" title="Treat as text"><X size={15} /></button>
               </div>

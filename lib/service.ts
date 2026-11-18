@@ -40,7 +40,7 @@ export type { Served };
 
 // Per-task budget ceilings (overridable by env). A thorough security report on this base/model can
 // run ~15-20 min, so the time budget is generous; cost/step keep one action bounded. These are
-// ceilings — a typical task costs ~$0.2-0.5.
+// ceilings; a typical task costs ~$0.2-0.5.
 const TIMEOUT_SECONDS = Number(process.env.HR_TASK_TIMEOUT_SECONDS || 3600);
 const MAX_STEP = Number(process.env.HR_TASK_MAX_STEP || 200);
 const MAX_COST_USD = Number(process.env.HR_TASK_MAX_COST_USD || 4);
@@ -82,13 +82,13 @@ export async function startTask(userId: string, input: string, repo?: RepoRef | 
       const archive = await fetchRepoArchive(repo);
       const up = await getHR().uploadFile(archive, 'repo.tar.gz', 'application/gzip');
       const where = `github.com/${repo.owner}/${repo.repo}${repo.ref ? ` @ ${repo.ref}` : ' (default branch)'}`;
-      const text = `${input}\n\nRepository: ${where} — attached as repo.tar.gz.${repo.subpath ? ` Focus on ${repo.subpath}.` : ''}`;
+      const text = `${input}\n\nRepository: ${where}, attached as repo.tar.gz.${repo.subpath ? ` Focus on ${repo.subpath}.` : ''}`;
       modelInput = [{ role: 'user', content: [{ type: 'input_text', text }, { type: 'input_file', file_id: up.id }] }];
     }
     const r = await getHR().startBackground({
       harnessId: HARNESS_ID,
       input: modelInput,
-      user: userId, // the signed-in person's id, from the server session — never from the browser
+      user: userId, // the signed-in person's id, from the server session, never from the browser
       idempotencyKey: rec.idempotencyKey,
       ...budgets(),
     });
@@ -245,7 +245,7 @@ export async function ensureFindings(rec: TaskRecord): Promise<TaskRecord> {
   return updated;
 }
 
-/** Live, sanitized progress from the current turn's tool calls (names only — never arguments). */
+/** Live, sanitized progress from the current turn's tool calls (names only, never arguments). */
 export async function liveProgress(rec: TaskRecord): Promise<Progress> {
   if (!rec.sessionId || !rec.responseId) return buildProgress('starting', []);
   const hr = getHR();
@@ -334,7 +334,7 @@ export function toClientSummary(rec: TaskRecord): ClientSummary {
 // ── plain, safe error sentences (never raw upstream text/ids) ──────────────────────────────────
 export function safeErrorMessage(e: unknown): string {
   if (e instanceof RepoFetchError) {
-    if (e.code === 'not_found') return "Couldn't find that repository. Sentinel can scan public GitHub repositories — check the URL and that it's public.";
+    if (e.code === 'not_found') return "Couldn't find that repository. Sentinel can scan public GitHub repositories, so check the URL and that the repo is public.";
     if (e.code === 'too_large') return `That repository is too large to scan (archive limit ${Math.round(MAX_ARCHIVE_BYTES / 1024 / 1024)} MB). Try a specific folder or paste the files you care about.`;
     return "Couldn't download that repository right now. Please try again in a moment.";
   }

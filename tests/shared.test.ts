@@ -87,7 +87,7 @@ test('markdown: only http(s) links survive; raw HTML stays text', () => {
 });
 
 test('markdown: inline formatting, fences, lists, tables', () => {
-  const inl = parseInline('**bold** and `code` and *it* — see https://owasp.org.');
+  const inl = parseInline('**bold** and `code` and *it*, see https://owasp.org.');
   assert.deepEqual(inl.map((n) => n.t), ['b', 'text', 'code', 'text', 'i', 'text', 'a', 'text']);
   const blocks = parseMarkdown('# Title\n\nPara one\nline two\n\n- a\n  - nested\n- b\n\n```python\nprint(1)\n```\n\n| A | B |\n|---|---|\n| 1 | 2 |');
   assert.deepEqual(blocks.map((b) => b.t), ['h', 'p', 'list', 'code', 'table']);

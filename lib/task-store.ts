@@ -3,7 +3,7 @@ import type { Finding, SeverityCounts, TaskSource } from '../shared/types';
 
 /**
  * Per-user task records. The browser never sees upstream ids (response_id, session_id) or
- * download_urls — only the product's own taskId and sanitized status/result. Each record is
+ * download_urls: only the product's own taskId and sanitized status/result. Each record is
  * owned by exactly one product user id and every route checks ownership.
  *
  * Two backends:
@@ -35,8 +35,8 @@ export interface TaskRecord {
   idempotencyKey: string;
   status: TaskStatus;
   input: string; // the end user's own typed request (their data; never exposed to other users)
-  responseId?: string; // upstream — server-only, never sent to the browser
-  sessionId?: string; // upstream — server-only, never sent to the browser
+  responseId?: string; // upstream, server-only, never sent to the browser
+  sessionId?: string; // upstream, server-only, never sent to the browser
   answer?: string;
   files?: StoredFile[];
   title?: string; // from the agent's manifest.json
@@ -135,7 +135,7 @@ class KvStore implements TaskStore {
 }
 
 // ── TiDB Serverless (MySQL-compatible) via the HTTP serverless driver ───────────────────────────
-// Connectionless over HTTPS — no TCP pool to exhaust, ideal for Vercel serverless functions.
+// Connectionless over HTTPS: no TCP pool to exhaust, ideal for Vercel serverless functions.
 type Exec = (sql: string, params?: unknown[]) => Promise<unknown>;
 
 function tidbUrl(): string | null {
@@ -214,7 +214,7 @@ export function getStore(): TaskStore {
     if (!_warned) {
       _warned = true;
       console.warn(
-        '[sentinel] No durable store configured — using in-memory task store (not durable across serverless invocations). Set DATABASE_URL (TiDB Serverless) or KV_REST_API_URL + KV_REST_API_TOKEN for production.',
+        '[sentinel] No durable store configured; using in-memory task store (not durable across serverless invocations). Set DATABASE_URL (TiDB Serverless) or KV_REST_API_URL + KV_REST_API_TOKEN for production.',
       );
     }
     _store = new MemoryStore();

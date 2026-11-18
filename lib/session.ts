@@ -8,7 +8,7 @@ import { ensureCookieSecret } from './secrets';
  * browser gets a stable, signed, httpOnly id cookie. That id is:
  *   - sent to HarnessRouter as `user` on every task (so per-person memory stays separated), and
  *   - the owner of every task record (checked on every route).
- * It is set by the SERVER, never read from anything the person typed — exactly what `user` requires.
+ * It is set by the SERVER, never read from anything the person typed, which is exactly what `user` requires.
  */
 
 const COOKIE = 'hr_uid';

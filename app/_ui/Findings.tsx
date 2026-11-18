@@ -80,7 +80,7 @@ export function Findings({
   const toggle = (id: string) => setOpen((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
   if (!findings.length) {
-    return <div className="empty">No findings — the agent didn’t report any vulnerabilities for this input.</div>;
+    return <div className="empty">No findings. The agent didn’t report any vulnerabilities for this input.</div>;
   }
   return (
     <div>

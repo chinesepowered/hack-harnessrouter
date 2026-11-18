@@ -1,0 +1,6 @@
+# Keep local secret files and non-runtime assets out of Vercel CLI uploads.
+# Secrets belong in Vercel project environment variables, never in uploaded files.
+.env*
+demo
+.agents
+tests

@@ -1,5 +1,5 @@
 // Map the agent's raw tool names to friendly, sanitized activity labels for the live progress
-// feed. Only the tool NAME is used — never its arguments or output.
+// feed. Only the tool NAME is used, never its arguments or output.
 import type { Activity, ActivityKind, Progress } from './types';
 
 const RULES: Array<[RegExp, ActivityKind, string]> = [

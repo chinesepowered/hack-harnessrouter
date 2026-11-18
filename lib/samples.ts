@@ -6,7 +6,7 @@ import { normalizeFindings, severityCounts } from '@/shared/findings';
 import { rendererKind } from '@/shared/renderer';
 import type { ClientDetail, ClientSummary, Finding } from '@/shared/types';
 
-// Public, read-only sample reports. Served from bundled data — no HarnessRouter call, no key.
+// Public, read-only sample reports. Served from bundled data: no HarnessRouter call, no key.
 
 const cache = new Map<string, Finding[]>();
 function findingsOf(s: SampleRecord): Finding[] {

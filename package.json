@@ -2,7 +2,7 @@
   "name": "sentinel",
   "version": "0.1.0",
   "private": true,
-  "description": "Sentinel — an AI Security Analyst powered by HarnessRouter (qwen / qwen3.8-max).",
+  "description": "Sentinel: an AI Security Analyst powered by HarnessRouter (qwen / qwen3.8-max).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

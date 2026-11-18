@@ -1,5 +1,5 @@
 // Client-side composition of a scan request. Attached text files are read in the browser and
-// inlined as labelled fences — nothing is uploaded until the user presses Analyze.
+// inlined as labelled fences; nothing is uploaded until the user presses Analyze.
 
 export interface Attachment {
   name: string;
@@ -26,7 +26,7 @@ function fence(a: Attachment): string {
 export function composeInput(text: string, atts: Attachment[]): string {
   const t = text.trim();
   if (!atts.length) return t;
-  const lead = t || 'Review these files for security vulnerabilities — rank findings by severity and give concrete fixes.';
+  const lead = t || 'Review these files for security vulnerabilities. Rank findings by severity and give concrete fixes.';
   return `${lead}\n\n${atts.map(fence).join('\n\n')}`;
 }
 
@@ -47,7 +47,7 @@ export async function readFiles(list: FileList | File[]): Promise<{ ok: Attachme
 }
 
 // ── examples (also the demo targets) ─────────────────────────────────────────────────────────
-export const FLASK_APP = `# acme-billing/app.py — tiny invoice API (demo target with deliberate bugs)
+export const FLASK_APP = `# acme-billing/app.py: tiny invoice API (demo target with deliberate bugs)
 import hashlib
 import os
 import sqlite3
@@ -143,10 +143,10 @@ export interface Example {
 }
 
 export const EXAMPLES: Example[] = [
-  { key: 'repo', title: 'Audit a GitHub repo', blurb: 'Paste a public repo URL — Sentinel fetches and audits it.', icon: 'repo',
+  { key: 'repo', title: 'Audit a GitHub repo', blurb: 'Paste a public repo URL. Sentinel fetches and audits it.', icon: 'repo',
     text: 'Audit this repo before we deploy it: https://github.com/we45/Vulnerable-Flask-App', attachments: [] },
   { key: 'flask', title: 'Flask invoice API', blurb: 'Auth, SQL injection, SSRF & path traversal in one file.', icon: 'api',
-    text: 'Audit our invoice API before we ship — rank findings by severity and give concrete fixes.', attachments: [att('app.py', FLASK_APP)] },
+    text: 'Audit our invoice API before we ship. Rank findings by severity and give concrete fixes.', attachments: [att('app.py', FLASK_APP)] },
   { key: 'docker', title: 'Container setup', blurb: 'Dockerfile + compose hardening before production.', icon: 'box',
     text: 'Review our container setup before we deploy to production.', attachments: [att('Dockerfile', DOCKERFILE), att('docker-compose.yml', COMPOSE)] },
   { key: 'model', title: 'Threat-model an API', blurb: 'Public REST API, JWT auth, uploads, Postgres.', icon: 'model',
@@ -158,7 +158,7 @@ export const NEXT_STEPS = [
   { key: 'fix', title: 'Show the fixed code', blurb: 'A hardened drop-in replacement, with a changelog.',
     prompt: 'Show me the hardened, fixed version of the code as a complete drop-in replacement, and list what changed.' },
   { key: 'tests', title: 'Write regression tests', blurb: 'Tests that fail now and pass once fixed.',
-    prompt: 'Write automated regression tests that prove the Critical and High findings are fixed — they should fail on the current code and pass once it is fixed.' },
+    prompt: 'Write automated regression tests that prove the Critical and High findings are fixed. They should fail on the current code and pass once it is fixed.' },
   { key: 'pr', title: 'Draft the PR description', blurb: 'Summary, changes by finding, test plan.',
     prompt: 'Draft a pull request description for fixing these findings: a short summary, the changes grouped by finding ID, and a testing checklist.' },
   { key: 'explain', title: 'Explain the top risk', blurb: 'Plain-language walkthrough for the team.',

@@ -5,7 +5,7 @@ import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Sentinel — AI Security Analyst',
+  title: 'Sentinel | AI Security Analyst',
   description:
     'Paste code, drop files, or paste a GitHub repo. Sentinel’s agent reviews it in a sandbox and returns a severity-graded security report with exact fixes. Powered by HarnessRouter.',
 };

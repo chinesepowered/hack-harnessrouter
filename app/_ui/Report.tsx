@@ -79,7 +79,7 @@ export function Report({
               <span><ScanSearch size={13} /> {total} finding{total === 1 ? '' : 's'}</span>
               {detail.updatedAt > detail.createdAt && <span><Clock size={13} /> Completed in {fmtDuration(detail.updatedAt - detail.createdAt)}</span>}
               <span><Calendar size={13} /> {date}</span>
-              {detail.status === 'incomplete' && <span style={{ color: 'var(--med)' }}>Stopped early ({detail.incompleteReason || 'budget'}) — partial results</span>}
+              {detail.status === 'incomplete' && <span style={{ color: 'var(--med)' }}>Stopped early ({detail.incompleteReason || 'budget'}): partial results</span>}
             </div>
           </div>
           {hasFindings && <GradeRing counts={detail.counts} />}

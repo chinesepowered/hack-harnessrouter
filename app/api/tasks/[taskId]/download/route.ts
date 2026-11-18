@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ task
   if (!rec || rec.userId !== userId || !rec.sessionId) return notFound();
 
   const path = req.nextUrl.searchParams.get('path') || '';
-  // Only files this task actually produced — never an arbitrary container path.
+  // Only files this task actually produced, never an arbitrary container path.
   if (!(rec.files || []).some((f) => f.path === path)) return notFound();
 
   try {

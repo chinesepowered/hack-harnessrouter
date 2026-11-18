@@ -102,7 +102,7 @@ export default function App() {
       if (isRunning(r.data)) poll(r.data.taskId, runId.current);
       window.scrollTo({ top: 0 });
     } catch {
-      say('Network error — please try again.');
+      say('Network error. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -111,7 +111,7 @@ export default function App() {
   const startScan = useCallback(async () => {
     const input = composeInput(draft, attachments);
     if (!input && !repo) return;
-    if (input.length > MAX_INPUT_CHARS) { say('That’s over the 100k-character limit — attach fewer files or scan the GitHub repo instead.'); return; }
+    if (input.length > MAX_INPUT_CHARS) { say('That’s over the 100k-character limit. Attach fewer files or scan the GitHub repo instead.'); return; }
     const repoUrl = repo ? `https://github.com/${repo.owner}/${repo.repo}${repo.ref ? `/tree/${repo.ref}${repo.subpath ? '/' + repo.subpath : ''}` : ''}` : undefined;
     await launch(input, repoUrl, true);
   }, [attachments, draft, launch, repo, say]);
@@ -133,7 +133,7 @@ export default function App() {
       if (isRunning(r.data)) poll(r.data.taskId, runId.current);
       setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 80);
     } catch {
-      say('Network error — please try again.');
+      say('Network error. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -162,10 +162,10 @@ export default function App() {
       if (!ok.length) { say('Could not open that scan.'); return; }
       setThread(ok);
       ok.filter(isRunning).forEach((d) => poll(d.taskId, mine));
-      loadTasks(); // opening may have settled finished scans — refresh their sidebar status
+      loadTasks(); // opening may have settled finished scans; refresh their sidebar status
       window.scrollTo({ top: 0 });
     } catch {
-      say('Network error — please try again.');
+      say('Network error. Please try again.');
     }
   }, [loadTasks, poll, say, tasks]);
 
@@ -261,7 +261,7 @@ export default function App() {
             <div className="dock-inner">
               <textarea
                 value={dock} onChange={(e) => setDock(e.target.value)} onKeyDown={onDockKey} rows={1}
-                placeholder={anyRunning ? 'Sentinel is working — you can ask another follow-up when it finishes…' : 'Ask a follow-up about this report…'}
+                placeholder={anyRunning ? 'Sentinel is working. You can ask another follow-up when it finishes…' : 'Ask a follow-up about this report…'}
                 disabled={anyRunning}
               />
               <button className="btn btn-primary" onClick={() => followUp(dock.trim())} disabled={!dock.trim() || anyRunning || busy} aria-label="Send follow-up">

@@ -15,11 +15,11 @@ update harnessrouter.json, PUT the whole Harness, and read it back. Every task s
 end user's id as `user`. The API key is HR_API_KEY in the server environment (.env.harnessrouter
 locally); never ask for it in chat.
 
-Feature: "Security Analyst" — harness_id chrn_01a74a33efe94123a15d3d8958abe16d, base qwen, model
+Feature: "Security Analyst", harness_id chrn_01a74a33efe94123a15d3d8958abe16d, base qwen, model
 qwen3.8-max, Workspace "Default Workspace". Deliverables are written under ./report/ in the agent's
 workspace (entry index.html + findings.json + manifest.json). The server runs tasks in background
 mode and polls GET /v1/responses/:id (serverless: no streaming). The integration skill is vendored
-at .agents/skills/harnessrouter/ — read its SKILL.md before changing the harness or the integration.
+at .agents/skills/harnessrouter/; read its SKILL.md before changing the harness or the integration.
 <!-- harnessrouter:end -->
 
 Repo scans: `lib/github.ts` fetches a GitHub archive (allowlisted host, 25 MB cap) and `lib/service.ts`

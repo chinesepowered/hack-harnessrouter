@@ -57,7 +57,7 @@ export function Sidebar({
       <button className="newscan" onClick={onNew}><Plus size={15} /> New scan</button>
       <div className="side-scroll">
         <div className="side-label">Recent scans</div>
-        {roots.length === 0 && <div className="side-empty">No scans yet — start one.</div>}
+        {roots.length === 0 && <div className="side-empty">No scans yet. Start one.</div>}
         {roots.map((t) => <Item key={t.taskId} t={t} active={t.taskId === activeId} onClick={() => onOpenTask(t.taskId)} />)}
         {samples.length > 0 && <div className="side-label">Sample reports</div>}
         {samples.map((t) => <Item key={t.taskId} t={t} active={t.taskId === activeId} onClick={() => onOpenSample(t.taskId)} />)}

@@ -11,7 +11,7 @@ import type { RepoRef } from '@/shared/github';
  *
  * SSRF-safe: the only URL ever fetched is built here from parts that `parseRepoUrl` already
  * whitelisted, and the final (post-redirect) host must be GitHub's. Size-capped and time-capped.
- * The archive is never extracted on our server — the agent extracts it inside its sandbox.
+ * The archive is never extracted on our server; the agent extracts it inside its sandbox.
  */
 export const MAX_ARCHIVE_BYTES = 25 * 1024 * 1024;
 const runFile = promisify(execFile);

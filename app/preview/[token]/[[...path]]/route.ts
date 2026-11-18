@@ -17,7 +17,7 @@ const notFound = () =>
  *
  * There is intentionally NO cookie check here: the sandbox iframe has an opaque origin and sends
  * no cookies, so every asset request after the first would fail. Authorization instead comes from
- * the signature in the URL — minted only by the owner-checked task-detail route, scoped to one
+ * the signature in the URL: minted only by the owner-checked task-detail route, scoped to one
  * taskId, and short-lived. The file is served with a strict sandbox CSP.
  */
 export async function GET(

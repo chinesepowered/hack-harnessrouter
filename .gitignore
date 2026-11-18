@@ -1,4 +1,4 @@
-# Secrets — never commit
+# Secrets: never commit
 .env.harnessrouter
 .env
 .env.local
@@ -28,3 +28,4 @@ Thumbs.db
 # Python
 __pycache__/
 *.pyc
+.env*

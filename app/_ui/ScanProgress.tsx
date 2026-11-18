@@ -80,7 +80,7 @@ export function ScanProgress({ detail }: { detail: ClientDetail }) {
             )}
           </ul>
         </div>
-        <div className="scan-note"><Info size={14} style={{ flex: 'none', marginTop: 2 }} /> Thorough reviews take a few minutes. You can leave this page — the scan keeps running and lands in Recent scans.</div>
+        <div className="scan-note"><Info size={14} style={{ flex: 'none', marginTop: 2 }} /> Thorough reviews take a few minutes. You can leave this page: the scan keeps running and lands in Recent scans.</div>
       </div>
     </div>
   );
