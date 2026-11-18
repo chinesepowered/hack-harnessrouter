@@ -96,7 +96,7 @@ export function InlineProgress({ detail }: { detail: ClientDetail }) {
       <span className="ring" />
       <div style={{ flex: 1, minWidth: 0 }}>
         <b>Sentinel is working on it</b>
-        <div className="sub">{last ? `${last.label}${last.count > 1 ? ` ×${last.count}` : ''} · ${p!.steps} tool calls` : 'Starting up…'}</div>
+        <div className="sub">{last ? `${last.label}${last.count > 1 ? ` ×${last.count}` : ''} · ${p!.steps} tool call${p!.steps === 1 ? '' : 's'}` : 'Starting up…'}</div>
       </div>
       <span className="timer">{fmtClock(now - detail.createdAt)}</span>
     </div>

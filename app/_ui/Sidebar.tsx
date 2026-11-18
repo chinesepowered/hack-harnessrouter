@@ -25,6 +25,7 @@ function Item({ t, active, onClick }: { t: ClientSummary; active: boolean; onCli
         <div className="side-title">{label(t)}</div>
         <div className="side-meta">
           {running ? <span style={{ color: 'var(--accent)' }}>Scanning…</span>
+            : failed ? <span style={{ color: 'var(--crit)' }}>{t.status === 'cancelled' ? 'Cancelled' : 'Didn’t complete'}</span>
             : t.counts ? <SeverityBar counts={t.counts} mini /> : null}
           {!t.sample && <span>{timeAgo(t.createdAt)}</span>}
           {t.sample && <span>Sample</span>}

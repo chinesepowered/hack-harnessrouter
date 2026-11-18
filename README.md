@@ -101,7 +101,7 @@ securing the whole org.
 | **Qwen Code CLI + `qwen3.8-max`** | Model (via HarnessRouter) | The agent harness + model doing the actual analysis. Chosen because it **does hands-on security work** where Western models over-refuse (our market edge). |
 | **Next.js + Vercel** | No | Frontend + serverless API routes. Serverless ⇒ background mode + polling (no held-open streams). |
 | **TiDB Serverless** | No | MySQL-compatible durable task store via the HTTP serverless driver. Records survive across serverless invocations (preferred; Vercel KV / Upstash also supported). |
-| **ElevenLabs** | No | Voiceover for the 2-minute demo video only. |
+| **ElevenLabs** | No | Voiceover and music bed for the demo video only. |
 
 ---
 
