@@ -1,11 +1,13 @@
 # Demo assets
 
-- **`sentinel-demo.mp4`**: the narrated demo (about 2 minutes, 1080p, captions burned in). Pitch
+- **`sentinel-demo.mp4`**: the narrated demo, also [on YouTube](https://www.youtube.com/watch?v=wMiJcJywn8Q) (about 2 minutes, 1080p,
+  captions burned in). Pitch
   cards plus real screen recordings of the product: paste a GitHub repo, watch the agent's live
   tool calls, explore the graded report and the agent's full HTML report, then ask the same agent
   for the fixed code.
 - **`sentinel-ui-walkthrough.mp4`**: the raw, silent screen recordings of the same UI, uncut and
   at real speed.
+- **`thumbnail.jpg`**: the video thumbnail (1280x720), also used in the main README.
 - **`script.md`**: the narration script, scene by scene.
 
 Voiceover is ElevenLabs voice "Jessica" (not a sponsor; used for the voiceover and music bed only).

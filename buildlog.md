@@ -12,11 +12,12 @@ and the HarnessRouter API responses for our runs.
   (`chrn_01a74a33efe94123a15d3d8958abe16d`), base `qwen` (Qwen Code CLI), model `qwen3.8-max`,
   Workspace *Default Workspace*.
 - **Stack:** Next.js 15 (App Router, TypeScript) for Vercel, TiDB Serverless for task records,
-  ElevenLabs for the demo voiceover only.
+  ElevenLabs for the demo voiceover and music only.
+- **Demo video:** [YouTube](https://www.youtube.com/watch?v=wMiJcJywn8Q) (about 2 minutes, real screen recordings).
 - **How we built it:** the team directed an AI coding agent through HarnessRouter's own onboarding
   path: `agents.md` plus the integration Skill, vendored at `.agents/skills/harnessrouter/`.
 - **Size:** 40 source files (about 4,500 lines of TypeScript and CSS, excluding bundled sample
-  data), 28 unit tests, 9 commits.
+  data), 28 unit tests, 12 commits.
 
 ---
 
