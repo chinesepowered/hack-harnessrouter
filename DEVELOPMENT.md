@@ -1,9 +1,9 @@
 > **This is the developer / setup guide.** For the project pitch, see [README.md](README.md).
 
-# Sentinel — AI Security Analyst
+# Sentinel: AI Security Analyst
 
-Sentinel is a small web app that lets a signed-in user submit a security task — paste source code, a
-config, a Dockerfile, dependencies or logs, or describe a system to threat-model — and get back a
+Sentinel is a small web app that lets a signed-in user submit a security task (paste source code, a
+config, a Dockerfile, dependencies or logs, or describe a system to threat-model) and get back a
 triaged findings report (severity, impact, remediation) as a shareable HTML document plus
 machine-readable JSON.
 
@@ -12,7 +12,7 @@ agent only does the bounded "analyze and report" job.
 
 - **Agent harness:** `qwen` (Qwen Code CLI) · **model:** `qwen3.8-max`
 - **Harness ID:** `chrn_01a74a33efe94123a15d3d8958abe16d` (Workspace: *Default Workspace*)
-- **Frontend/stack:** Next.js (App Router, TypeScript) on Vercel — serverless, so **background mode + polling** (no streaming)
+- **Frontend/stack:** Next.js (App Router, TypeScript) on Vercel; serverless, so **background mode + polling** (no streaming)
 
 > Authorized, defensive and educational security use only. The agent refuses malware, attacks on
 > systems the user doesn't own, mass targeting, phishing/credential harvesting, and detection
@@ -25,7 +25,7 @@ Browser ──► Next.js API route (server, Node runtime)
               • authenticates the user (signed httpOnly cookie = the product `user` id)
               • maps the feature to its harness_id (from harnessrouter.json)
               • POST https://api.harnessrouter.ai/v1/responses
-                  Authorization: Bearer $HR_API_KEY   (from the server env — never the browser)
+                  Authorization: Bearer $HR_API_KEY   (from the server env, never the browser)
                   { input, user, metadata.harness_id, background: true }
               • persists the task record (response id + session id) under the user
             ◄── returns only the product taskId + sanitized status/result
@@ -77,7 +77,7 @@ and the client polls; each poll also *recovers* a task (settles it from `GET /v1
    python3 .agents/skills/harnessrouter/scripts/key_setup.py check --project .
    ```
 
-   Alternatively set a real `HR_API_KEY` environment variable — it takes precedence.
+   Alternatively set a real `HR_API_KEY` environment variable; it takes precedence.
 
 3. **Signing secrets.** For a stable dev experience, `.env.local` holds `COOKIE_SECRET` and
    `PREVIEW_SIGNING_SECRET` (gitignored). Without them the app still works in dev (it generates

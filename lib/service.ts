@@ -33,7 +33,7 @@ export type { Served };
 
 // Per-task budget ceilings (overridable by env). A thorough security report on this base/model can
 // run ~15-20 min, so the time budget is generous; cost/step keep one action bounded. These are
-// ceilings — a typical task costs ~$0.2-0.5.
+// ceilings; a typical task costs ~$0.2-0.5.
 const TIMEOUT_SECONDS = Number(process.env.HR_TASK_TIMEOUT_SECONDS || 3600);
 const MAX_STEP = Number(process.env.HR_TASK_MAX_STEP || 200);
 const MAX_COST_USD = Number(process.env.HR_TASK_MAX_COST_USD || 4);
@@ -70,7 +70,7 @@ export async function startTask(userId: string, input: string): Promise<TaskReco
   const r = await getHR().startBackground({
     harnessId: HARNESS_ID,
     input,
-    user: userId, // the signed-in person's id, from the server session — never from the browser
+    user: userId, // the signed-in person's id, from the server session, never from the browser
     idempotencyKey: rec.idempotencyKey,
     timeoutSeconds: TIMEOUT_SECONDS,
     maxStep: MAX_STEP,

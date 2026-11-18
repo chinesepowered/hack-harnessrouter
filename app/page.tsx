@@ -350,7 +350,7 @@ export default function Home() {
             <section className="hero">
               <h2>Analyze something for security issues</h2>
               <p>
-                Paste source code, a config file, a Dockerfile, dependencies, or logs — or describe a
+                Paste source code, a config file, a Dockerfile, dependencies, or logs, or describe a
                 system to threat-model. Sentinel reviews it, explains each finding with severity and
                 remediation, and produces a shareable report. For authorized, defensive, and
                 educational use only.
@@ -393,7 +393,7 @@ export default function Home() {
             <div className="row">
               <span className="note">
                 {composerMode === 'locked' ? (
-                  <>Analysis in progress — you can continue once it finishes.</>
+                  <>Analysis in progress. You can continue once it finishes.</>
                 ) : composerMode === 'followup' ? (
                   <>Continuing this analysis · <span className="kbd">⌘/Ctrl ↵</span> to send</>
                 ) : (
@@ -519,7 +519,7 @@ function Turn({ turn }: { turn: Detail }) {
             <div className="preview-wrap">
               <div className="preview-bar">
                 <span>
-                  <span className="dot">●</span> Security report — sandboxed preview
+                  <span className="dot">●</span> Security report: sandboxed preview
                 </span>
                 <a href={turn.previewUrl} target="_blank" rel="noreferrer noopener">
                   Open in new tab ↗
