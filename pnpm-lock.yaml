@@ -11,6 +11,9 @@ importers:
 
   .:
     dependencies:
+      '@tidbcloud/serverless':
+        specifier: ^0.3.0
+        version: 0.3.0
       next:
         specifier: ^15.5.0
         version: 15.5.29(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -241,6 +244,10 @@ packages:
 
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
+
+  '@tidbcloud/serverless@0.3.0':
+    resolution: {integrity: sha512-SrTqKNPuskV8GTm574d9otox8GAKXrsoF5NfQ5fiDirR+ao+eE6O2pfWr5zLhmFLQRbeuT8SKaUD+JOK0Z7gyQ==}
+    engines: {node: '>=16'}
 
   '@types/node@22.20.5':
     resolution: {integrity: sha512-U2+DNr+wSjpsTS/wZGYHq7GcwfuSmKiKvoPvK22zwTlRhU91yOniN4qRR5KhIjvif7ysw/dz/hKmfDH0Ris4aA==}
@@ -499,6 +506,8 @@ snapshots:
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.9.1
+
+  '@tidbcloud/serverless@0.3.0': {}
 
   '@types/node@22.20.5':
     dependencies:

@@ -129,18 +129,87 @@ class KvStore implements TaskStore {
   }
 }
 
+// ── TiDB Serverless (MySQL-compatible) via the HTTP serverless driver ───────────────────────────
+// Connectionless over HTTPS — no TCP pool to exhaust, ideal for Vercel serverless functions.
+type Exec = (sql: string, params?: unknown[]) => Promise<unknown>;
+
+function tidbUrl(): string | null {
+  return (process.env.DATABASE_URL || process.env.TIDB_DATABASE_URL || '').trim() || null;
+}
+
+/** Build an executor from a TiDB Cloud serverless connection string. Driver loaded lazily. */
+function tidbExec(url: string): () => Promise<Exec> {
+  return async () => {
+    const { connect } = await import('@tidbcloud/serverless');
+    const conn = connect({ url });
+    return (sql: string, params: unknown[] = []) => conn.execute(sql, params);
+  };
+}
+
+const CREATE_TABLE = `CREATE TABLE IF NOT EXISTS sentinel_tasks (
+  task_id VARCHAR(64) PRIMARY KEY,
+  user_id VARCHAR(191) NOT NULL,
+  created_at BIGINT NOT NULL,
+  data JSON NOT NULL,
+  INDEX idx_user_created (user_id, created_at)
+)`;
+
+export class TiDBStore implements TaskStore {
+  private readonly makeExec: () => Promise<Exec>;
+  private execP: Promise<Exec> | null = null;
+  constructor(makeExec: () => Promise<Exec>) {
+    this.makeExec = makeExec;
+  }
+  /** One-time: build the executor and ensure the table exists (shared across concurrent callers). */
+  private exec(): Promise<Exec> {
+    return (this.execP ??= (async () => {
+      const e = await this.makeExec();
+      await e(CREATE_TABLE);
+      return e;
+    })());
+  }
+  // The driver decodes JSON columns to objects; a string value is tolerated too.
+  private static decode(row: { data: unknown }): TaskRecord {
+    return (typeof row.data === 'string' ? JSON.parse(row.data) : row.data) as TaskRecord;
+  }
+  async get(taskId: string): Promise<TaskRecord | undefined> {
+    const e = await this.exec();
+    const rows = (await e('SELECT data FROM sentinel_tasks WHERE task_id = ?', [taskId])) as Array<{ data: unknown }>;
+    return rows && rows.length ? TiDBStore.decode(rows[0]) : undefined;
+  }
+  async put(rec: TaskRecord): Promise<void> {
+    const e = await this.exec();
+    await e(
+      `INSERT INTO sentinel_tasks (task_id, user_id, created_at, data) VALUES (?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE user_id = VALUES(user_id), created_at = VALUES(created_at), data = VALUES(data)`,
+      [rec.taskId, rec.userId, rec.createdAt, JSON.stringify(rec)],
+    );
+  }
+  async listByUser(userId: string): Promise<TaskRecord[]> {
+    const e = await this.exec();
+    const rows = (await e(
+      'SELECT data FROM sentinel_tasks WHERE user_id = ? ORDER BY created_at DESC LIMIT 200',
+      [userId],
+    )) as Array<{ data: unknown }>;
+    return (rows || []).map((r) => TiDBStore.decode(r));
+  }
+}
+
 let _store: TaskStore | undefined;
 let _warned = false;
 export function getStore(): TaskStore {
   if (_store) return _store;
+  const url = tidbUrl();
   const kv = kvEnv();
-  if (kv) {
+  if (url) {
+    _store = new TiDBStore(tidbExec(url)); // preferred durable store
+  } else if (kv) {
     _store = new KvStore(kv.url, kv.token);
   } else {
     if (!_warned) {
       _warned = true;
       console.warn(
-        '[sentinel] No KV configured — using in-memory task store (not durable across serverless invocations). Set KV_REST_API_URL + KV_REST_API_TOKEN (Vercel KV / Upstash) for production.',
+        '[sentinel] No durable store configured — using in-memory task store (not durable across serverless invocations). Set DATABASE_URL (TiDB Serverless) or KV_REST_API_URL + KV_REST_API_TOKEN for production.',
       );
     }
     _store = new MemoryStore();

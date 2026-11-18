@@ -46,7 +46,7 @@ and the client polls; each poll also *recovers* a task (settles it from `GET /v1
 |---|---|
 | `lib/harnessrouter.ts` | HarnessRouter Cloud client (vendored from the official skill, Apache-2.0). SSE/background, files, signed previews. Server-only. |
 | `lib/service.ts` | The feature's server logic: start/continue a task, poll+settle, sanitize results. Holds the harness_id. |
-| `lib/task-store.ts` | Per-user task records. In-memory for dev; Vercel KV / Upstash Redis in production (auto-selected by env). |
+| `lib/task-store.ts` | Per-user task records. In-memory for dev; TiDB Serverless (MySQL) or Vercel KV / Upstash in production (auto-selected by env). |
 | `lib/session.ts` | The product `user` id: a signed, httpOnly cookie set by the server. |
 | `lib/secrets.ts` | Stable cookie / preview-signing secrets. |
 | `app/api/tasks/*` | Start, list, poll/detail, continue, download routes. |
@@ -106,7 +106,7 @@ gitignored and not deployed, so production reads the key from the env var):
 | `HR_API_KEY` | ✅ | `sk-hr-…`; server-only secret. |
 | `COOKIE_SECRET` | ✅ | Stable random; else sessions break between invocations. |
 | `PREVIEW_SIGNING_SECRET` | ✅ | 64 hex chars; else preview links break between invocations. |
-| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | ▲ recommended | Vercel KV / Upstash Redis. Without it, task records are in-memory and won't survive across serverless invocations (users can't reliably see/continue past tasks). |
+| `DATABASE_URL` (TiDB Serverless) **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN` | ▲ recommended | Durable task store. TiDB Serverless (MySQL-compatible, HTTP serverless driver) is preferred; Vercel KV / Upstash also supported. Without one, task records are in-memory and won't survive across serverless invocations. `DATABASE_URL` wins if both are set. The `sentinel_tasks` table is auto-created on first use. |
 | `HR_TASK_TIMEOUT_SECONDS` / `HR_TASK_MAX_STEP` / `HR_TASK_MAX_COST_USD` | optional | Per-task budget ceilings (defaults 1200 / 120 / 3). |
 
 pnpm is auto-detected from `pnpm-lock.yaml`. See `.env.example`.

@@ -88,6 +88,7 @@ securing the whole org.
 | **[HarnessRouter](https://harnessrouter.ai)** | ✅ **Sponsor** | The **entire agent backend.** One `harness` resource = the whole security‑analyst agent: base, model, standing instructions, tools, sessions, files, budgets. Our server calls `POST /v1/responses`; HarnessRouter runs the multi‑step job in a sandbox and returns the answer + generated report files. |
 | **Qwen Code CLI + `qwen3.8-max`** | Model (via HarnessRouter) | The agent harness + model doing the actual analysis. Chosen because it **does hands‑on security work** where Western models over‑refuse (our market edge). |
 | **Next.js + Vercel** | — | Frontend + serverless API routes. Serverless ⇒ background mode + polling (no held‑open streams). |
+| **TiDB Serverless** | — | MySQL-compatible durable task store via the HTTP serverless driver — records survive across serverless invocations (preferred; Vercel KV / Upstash also supported). |
 | **ElevenLabs** | — *(not a sponsor)* | Voiceover for the 2‑minute demo video only. |
 
 ---
