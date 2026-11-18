@@ -99,15 +99,12 @@ securing the whole org.
 
 ---
 
-## 🤝 Sponsors & stack
+## 🤝 Sponsors
 
 | Technology | Sponsor? | Role in Sentinel |
 |---|:--:|---|
 | **[HarnessRouter](https://harnessrouter.ai)** | ✅ **Sponsor** | The **entire agent backend.** One `harness` resource is the whole security-analyst agent: base, model, standing instructions, tools, sessions, files and budgets. Our server uploads repos with `POST /v1/files` and starts tasks with `POST /v1/responses`. HarnessRouter runs the multi-step job in a sandbox and returns the answer plus the generated report files. Session turns power the live activity feed. |
-| **Qwen Code CLI + `qwen3.8-max`** | Model (via HarnessRouter) | The agent harness + model doing the actual analysis. Chosen because it **does hands-on security work** where Western models over-refuse (our market edge). |
-| **Next.js + Vercel** | No | Frontend + serverless API routes. Serverless ⇒ background mode + polling (no held-open streams). |
-| **TiDB Serverless** | No | MySQL-compatible durable task store via the HTTP serverless driver. Records survive across serverless invocations (preferred; Vercel KV / Upstash also supported). |
-| **ElevenLabs** | No | Voiceover and music bed for the demo video only. |
+| **Qwen Code CLI + `qwen3.8-max`** | Model (via HarnessRouter) | The agent harness + model doing the actual analysis. Chosen because, unlike Anthropic and OpenAI models, it's permissive enough for **cybersecurity work and bug-bounty hunting** (our market edge). |
 
 ---
 
@@ -140,13 +137,15 @@ HarnessRouter is what makes Sentinel a *product* and not a prompt. We treated th
 
 ## 🧠 Why Qwen Code CLI + `qwen3.8-max`
 
-A security analyst that refuses to analyze is useless. In testing, `qwen3.8-max` run through the
-**Qwen Code CLI** agent harness consistently **does the hands-on work**: it traces the injection,
-reasons about the exploit, writes the PoC logic, and ranks severity, for code you own and targets
-you're authorized to test, where leading Western models hedge or refuse outright. The Qwen Code CLI
-base also ships exactly the tools a code-level security review needs: a shell, file read/write,
-grep/glob, and web fetch, all sandboxed on HarnessRouter. We pair that willingness with
-**app-level guardrails on the harness** so the engagement stays authorized and defensive.
+We chose Qwen because, **unlike Anthropic and OpenAI models, it's more permissive: it allows real
+cybersecurity work and bug-bounty hunting.** A security analyst that refuses to analyze is useless.
+In testing, `qwen3.8-max` run through the **Qwen Code CLI** agent harness consistently **does the
+hands-on work**: it traces the injection, reasons about the exploit, writes the PoC logic, and ranks
+severity, for code you own and targets you're authorized to test. Anthropic and OpenAI models hedge
+or refuse that same work. The Qwen Code CLI base also ships exactly the tools a code-level security
+review needs: a shell, file read/write, grep/glob, and web fetch, all sandboxed on HarnessRouter. We
+pair that permissiveness with **app-level guardrails on the harness** so the engagement stays
+authorized and defensive.
 
 ---
 
