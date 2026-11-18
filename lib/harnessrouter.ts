@@ -305,6 +305,25 @@ export class HarnessRouter {
   cancelResponse(id: string) { return this.request<HRResponse>('POST', `/v1/responses/${encodeURIComponent(id)}/cancel`, {}); }
   cancelSession(sessionId: string) { return this.request<{ status: string }>('POST', `/v1/sessions/${encodeURIComponent(sessionId)}/cancel`, {}); }
 
+  /** Upload a file for a task's input (POST /v1/files, multipart). Use its id as an input_file. */
+  async uploadFile(bytes: Uint8Array, filename: string, contentType = 'application/octet-stream'): Promise<{ id: string; bytes: number; filename: string }> {
+    const form = new FormData();
+    form.append('purpose', 'user_data');
+    form.append('file', new Blob([bytes as unknown as BlobPart], { type: contentType }), filename);
+    const res = await this.http(this.baseUrl + '/v1/files', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${this.key}`, 'UHP-Version': UHP_VERSION, Accept: 'application/json' },
+      body: form,
+      redirect: 'manual',
+    });
+    if (!res.ok) {
+      let parsed: unknown = null;
+      try { parsed = await res.json(); } catch { /* not JSON */ }
+      throw new HRError(res.status, parsed, res.headers.get('retry-after'));
+    }
+    return (await res.json()) as { id: string; bytes: number; filename: string };
+  }
+
   async listFiles(sessionId: string, opts: { changed?: boolean } = {}): Promise<SessionFile[]> {
     const q = opts.changed ? '?changed=true' : '';
     return (await this.request<{ files: SessionFile[] }>('GET', `/v1/sessions/${encodeURIComponent(sessionId)}/files${q}`)).files || [];

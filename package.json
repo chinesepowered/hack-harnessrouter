@@ -8,10 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test --conditions=react-server tests/adapter.test.ts tests/product.test.ts"
+    "test": "node --test --conditions=react-server tests/adapter.test.ts tests/product.test.ts tests/shared.test.ts"
   },
   "dependencies": {
     "@tidbcloud/serverless": "^0.3.0",
+    "geist": "^1.9.2",
+    "lucide-react": "^1.75.0",
     "next": "^15.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

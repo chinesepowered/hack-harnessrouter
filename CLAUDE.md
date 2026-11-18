@@ -21,3 +21,9 @@ workspace (entry index.html + findings.json + manifest.json). The server runs ta
 mode and polls GET /v1/responses/:id (serverless: no streaming). The integration skill is vendored
 at .agents/skills/harnessrouter/ — read its SKILL.md before changing the harness or the integration.
 <!-- harnessrouter:end -->
+
+Repo scans: `lib/github.ts` fetches a GitHub archive (allowlisted host, 25 MB cap) and `lib/service.ts`
+uploads it with `POST /v1/files` and attaches it to the task as an `input_file`; the harness's INPUTS
+rule unpacks it. Keep GitHub URL parsing (`shared/github.ts`) strict. `shared/` is isomorphic (used by
+server and UI): never import `lib/*` there. The live activity feed may show tool names only, never
+arguments. UI components live in `app/_ui/`.

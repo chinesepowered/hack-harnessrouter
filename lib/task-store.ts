@@ -1,4 +1,5 @@
 import 'server-only';
+import type { Finding, SeverityCounts, TaskSource } from '../shared/types';
 
 /**
  * Per-user task records. The browser never sees upstream ids (response_id, session_id) or
@@ -44,6 +45,10 @@ export interface TaskRecord {
   incompleteReason?: string;
   roleMismatch?: boolean;
   parentTaskId?: string; // set on a follow-up turn
+  findings?: Finding[]; // normalized from report/findings.json (snapshot at settle time)
+  counts?: SeverityCounts;
+  findingsChecked?: boolean; // true once we've looked for findings.json (avoids refetching)
+  source?: TaskSource; // e.g. the GitHub repo this scan was run on
   createdAt: number;
   updatedAt: number;
 }

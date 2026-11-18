@@ -1,13 +1,13 @@
 # 🛡️ Sentinel — the security analyst that actually does the work
 
-**Sentinel is an agentic security analyst for developers and bug‑bounty hunters.** Paste code, a
-config, a Dockerfile, dependencies, or logs — or describe a system — and Sentinel runs a real,
-multi‑step review inside a sandboxed agent and hands back a **triaged findings report** (severity,
-impact, and the exact fix) as a shareable HTML document plus machine‑readable JSON. The agent
-backend is a single **HarnessRouter** harness running **Qwen Code CLI on `qwen3.8-max`** — a model
-that will actually reason through an exploit path for code you own or a target you're authorized to
-test, instead of refusing. It's the difference between *"I can't help with that"* and a prioritized
-bug list you can act on this afternoon.
+**Sentinel is an agentic security analyst for developers and bug‑bounty hunters.** Paste code, drop
+in files, or **just paste a GitHub repo URL**, and Sentinel runs a real, multi‑step review inside a
+sandboxed agent. You get back a **security grade and triaged findings** (severity, CWE, the exact
+file and line, impact, and the fix), a shareable HTML report, and machine‑readable JSON. Then one
+click asks the same agent for the hardened code. The agent backend is a single **HarnessRouter**
+harness running **Qwen Code CLI on `qwen3.8-max`**. That model will reason through an exploit path
+in code you own, or a target you're authorized to test, instead of refusing. It's the difference
+between *"I can't help with that"* and a prioritized bug list you can act on this afternoon.
 
 > 🏆 Built for the **HarnessRouter** hackathon. HarnessRouter is the entire agent backend.
 
@@ -37,11 +37,22 @@ security — it just removes the false refusals that cripple the genuine use cas
 > Built by a team that has **earned payouts from OpenAI's bug‑bounty program** — Sentinel is the
 > tool we wished we had while hunting.
 
+## ✨ What you get
+
+| | |
+|---|---|
+| **Point it at anything** | Paste code, drop in files, or paste a GitHub URL (a repo, a branch, or a folder link). The server fetches the repo archive from GitHub (allowlisted host, 25 MB cap) and uploads it to HarnessRouter's Files API. The agent unpacks it inside its sandbox. |
+| **Watch it work** | A live view of the agent's real tool calls (reading code, running analysis commands, writing the report) and a four‑stage progress tracker. It's polled from the HarnessRouter session, so nothing has to stream. |
+| **A verdict, not a wall of text** | An A–F security grade with a 0–100 score, severity tiles, and filterable, searchable finding cards. Each finding has its `file:line`, CWE, what's wrong, the impact, and a ready‑to‑paste fix. |
+| **The full report** | The agent's own HTML report opens in a locked‑down sandboxed preview. `findings.json` and every generated file can be downloaded for your pipeline. |
+| **Keep going** | One‑click next steps (*hardened drop‑in code*, *regression tests*, *PR description*, *explain the top risk*) continue the **same agent session**, with the same files, via `previous_response_id`. |
+| **Try it instantly** | Three bundled sample reports (real Sentinel runs) open with no wait. |
+
 ## Who it's for
 
 | Use case | What Sentinel does |
 |---|---|
-| **1. Audit your own projects** | Drop in a file, a diff, a Dockerfile, or your dependency manifest and get a severity‑ranked list of real issues (injection, authz gaps, secrets, misconfig) with concrete remediations — before they ship. |
+| **1. Audit your own projects** | Paste a GitHub repo, a file, a diff, a Dockerfile, or your dependency manifest. You get a graded, severity‑ranked list of real issues (injection, authz gaps, secrets, misconfig) with concrete fixes, before they ship. |
 | **2. Hunt bug bounties** | Point it at code or a system you're authorized to assess and let it reason through exploit paths, rank impact, and draft the finding — the grind a Western model usually refuses. The team behind Sentinel has been paid by **OpenAI's bug‑bounty program**; this is the workflow that got us there. |
 
 ---
@@ -85,7 +96,7 @@ securing the whole org.
 
 | Technology | Sponsor? | Role in Sentinel |
 |---|:--:|---|
-| **[HarnessRouter](https://harnessrouter.ai)** | ✅ **Sponsor** | The **entire agent backend.** One `harness` resource = the whole security‑analyst agent: base, model, standing instructions, tools, sessions, files, budgets. Our server calls `POST /v1/responses`; HarnessRouter runs the multi‑step job in a sandbox and returns the answer + generated report files. |
+| **[HarnessRouter](https://harnessrouter.ai)** | ✅ **Sponsor** | The **entire agent backend.** One `harness` resource is the whole security‑analyst agent: base, model, standing instructions, tools, sessions, files and budgets. Our server uploads repos with `POST /v1/files` and starts tasks with `POST /v1/responses`. HarnessRouter runs the multi‑step job in a sandbox and returns the answer plus the generated report files. Session turns power the live activity feed. |
 | **Qwen Code CLI + `qwen3.8-max`** | Model (via HarnessRouter) | The agent harness + model doing the actual analysis. Chosen because it **does hands‑on security work** where Western models over‑refuse (our market edge). |
 | **Next.js + Vercel** | — | Frontend + serverless API routes. Serverless ⇒ background mode + polling (no held‑open streams). |
 | **TiDB Serverless** | — | MySQL-compatible durable task store via the HTTP serverless driver — records survive across serverless invocations (preferred; Vercel KV / Upstash also supported). |
@@ -110,6 +121,10 @@ HarnessRouter is what makes Sentinel a *product* and not a prompt. We treated th
   multi‑step agent with a shell, file tools, sessions, follow‑ups, per‑task budgets, and
   **generated files** (the HTML report) we fetch back and serve. That's a huge amount of
   infrastructure we didn't have to build.
+- **Files and sessions, not just text.** A whole GitHub repo becomes one `POST /v1/files` upload,
+  attached to the task as an `input_file`, and the agent unpacks it in its sandbox. The live
+  activity feed reads the session's turns. Follow‑ups ("give me the fixed code") continue the same
+  session, so the agent still has the repo and its own report on disk.
 - **Serverless‑friendly.** `background: true` + `GET /v1/responses/{id}` polling fits Vercel
   functions perfectly — no minutes‑long open connection, and each poll doubles as crash recovery.
 - **Clean security boundary.** The key is a server‑side HarnessRouter credential; sessions and
@@ -132,28 +147,31 @@ grep/glob, and web fetch, all sandboxed on HarnessRouter. We pair that willingne
 
 ```mermaid
 flowchart LR
-    U[👤 Developer / bug-bounty hunter] -->|"paste code, config, logs"| B[Next.js UI]
-    B -->|"POST /api/tasks (input only)"| S[Next.js API routes<br/>server · Node runtime · Vercel]
-    S -->|"maps feature → harness_id<br/>Authorization: Bearer HR_API_KEY"| HR[(HarnessRouter Cloud)]
-    HR -->|"runs sandboxed agent"| Q[Qwen Code CLI<br/>qwen3.8-max]
-    Q -->|"shell · read/write · grep · web_fetch"| Q
-    Q -->|"writes report files"| HR
-    S <-->|"background:true → poll GET /v1/responses/:id"| HR
-    S -->|"list session files · fetch bytes with key"| HR
+    U["👤 Developer / bug-bounty hunter"] -->|"paste code · drop files · GitHub URL"| B["Next.js UI"]
+    B -->|"POST /api/tasks {input, repo}"| S["Next.js API routes<br/>Node runtime · Vercel"]
+    S -->|"allowlisted fetch · 25 MB cap"| GH[("GitHub<br/>repo tar.gz")]
+    S -->|"POST /v1/files → input_file<br/>POST /v1/responses · background<br/>Bearer HR_API_KEY"| HR[("HarnessRouter Cloud<br/>harness: Security Analyst")]
+    HR -->|"runs sandboxed agent"| Q["Qwen Code CLI<br/>qwen3.8-max"]
+    Q -->|"shell · read/write · grep · web"| Q
+    Q -->|"report/index.html · findings.json"| HR
+    S <-->|"poll /v1/responses/:id<br/>/v1/sessions/:id/turns"| HR
+    S <-->|"task records"| DB[("TiDB Serverless")]
     B -->|"poll GET /api/tasks/:id"| S
-    B -->|"signed, sandboxed iframe"| P[preview report HTML]
-    S -.->|"owner-checked download"| F[findings.json + report.html]
+    B -->|"signed, sandboxed iframe"| P["report preview"]
 
     style HR fill:#132e26,stroke:#35d6a4,color:#e5edf7
     style Q fill:#1b2535,stroke:#6fb5ff,color:#e5edf7
     style S fill:#111722,stroke:#233044,color:#e5edf7
     style B fill:#111722,stroke:#233044,color:#e5edf7
+    style DB fill:#111722,stroke:#5cb2ff,color:#e5edf7
 ```
 
 **The browser only ever talks to our backend.** It never sees the API key, the `harness_id`, upstream
-session/response ids, or raw `download_url`s. One user request = one task (`input` = what the user
-typed); the server sets `metadata.harness_id` and the signed‑in user's id as `user`; follow‑ups
-reuse the stored `previous_response_id` + `session_id` to continue the same session.
+session/response ids, file ids, or raw `download_url`s. One user request is one task (`input` is
+what the user typed, plus the attached repo archive). The server sets `metadata.harness_id` and
+the signed‑in user's id as `user`. Follow‑ups reuse the stored `previous_response_id` and
+`session_id` to continue the same session. Task records live in **TiDB Serverless**, so polling,
+history and follow‑ups work across stateless serverless invocations.
 
 ## 🔒 Security model (we practice what we preach)
 
@@ -163,6 +181,14 @@ reuse the stored `previous_response_id` + `session_id` to continue the same sess
   never authorization by itself.
 - **Generated HTML** is served only through a **signed, short‑lived, task‑scoped URL** under a strict
   sandbox CSP (no `allow-same-origin`) — it can't touch the app's cookies or origin.
+- **Repo fetches are SSRF‑safe.** A pasted URL is parsed into owner, repo, ref and folder with strict
+  allowlist patterns, then rebuilt server‑side against GitHub only. Redirects must stay on GitHub,
+  and archives are capped at 25 MB and checked to be gzip before upload.
+- **The live feed leaks nothing.** The browser sees friendly labels derived from tool *names* only,
+  never tool arguments, paths or output.
+- **Agent output is untrusted input.** Replies are rendered by a safe Markdown renderer (no raw
+  HTML, `http(s)` links only). Findings are schema‑normalized and length‑capped before they reach
+  the UI.
 - **Guardrails** (refuse malware / unauthorized / mass‑targeting / phishing / evasion) live in the
   harness instructions, enforced on every task.
 
@@ -174,11 +200,11 @@ reuse the stored `previous_response_id` + `session_id` to continue the same sess
 pnpm install
 # HarnessRouter key lives in gitignored .env.harnessrouter (HR_API_KEY=sk-hr-…), already set up
 pnpm dev          # http://localhost:3000
-pnpm test         # adapter + product unit tests
+pnpm test         # adapter, product and shared (grading, findings, markdown safety, GitHub parsing) tests
 pnpm build        # production build
 ```
 
 Full setup, environment variables, and Vercel deployment are in **[DEVELOPMENT.md](DEVELOPMENT.md)**.
 
 - **Harness ID:** `chrn_01a74a33efe94123a15d3d8958abe16d` · base `qwen` · model `qwen3.8-max` · Workspace *Default Workspace*
-- **Demo video:** `demo/sentinel-demo.mp4` (2 min)
+- **Demo video:** [`demo/sentinel-demo.mp4`](demo/sentinel-demo.mp4) (≈2 min). It shows real screen recordings of a live GitHub repo scan: paste the repo, watch the agent work, explore the graded report, and get the fixed code as a follow‑up.

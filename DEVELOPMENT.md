@@ -2,10 +2,10 @@
 
 # Sentinel — AI Security Analyst
 
-Sentinel is a small web app that lets a signed-in user submit a security task — paste source code, a
-config, a Dockerfile, dependencies or logs, or describe a system to threat-model — and get back a
-triaged findings report (severity, impact, remediation) as a shareable HTML document plus
-machine-readable JSON.
+Sentinel is a small web app that lets a signed-in user submit a security task: paste source code, drop
+in files, paste a **GitHub repo URL**, or describe a system to threat-model. They get back a graded,
+triaged findings report (severity, CWE, location, impact, fix) as a shareable HTML document plus
+machine-readable JSON, and can ask follow-ups (fixed code, tests, PR text) in the same agent session.
 
 The agent runs on **HarnessRouter Cloud**. The product keeps its own UI, identity and routes; the
 agent only does the bounded "analyze and report" job.
@@ -24,13 +24,16 @@ agent only does the bounded "analyze and report" job.
 Browser ──► Next.js API route (server, Node runtime)
               • authenticates the user (signed httpOnly cookie = the product `user` id)
               • maps the feature to its harness_id (from harnessrouter.json)
+              • repo scans: fetch github.com/{owner}/{repo} as tar.gz (allowlisted, 25 MB cap)
+                  → POST /v1/files (purpose=user_data) → attached to the task as an input_file
               • POST https://api.harnessrouter.ai/v1/responses
                   Authorization: Bearer $HR_API_KEY   (from the server env — never the browser)
-                  { input, user, metadata.harness_id, background: true }
+                  { input, user, metadata.harness_id, background: true, budgets }
               • persists the task record (response id + session id) under the user
             ◄── returns only the product taskId + sanitized status/result
 Browser ──► polls GET /api/tasks/:taskId   (server polls GET /v1/responses/:id until terminal)
-              • on completion: lists session files, reads the agent's manifest.json
+              • while running: GET /v1/sessions/:id/turns → tool *names* → friendly activity labels
+              • on completion: lists session files, reads the agent's manifest.json + findings.json
               • serves the HTML report via a signed, sandboxed preview, and files via owner-checked downloads
 ```
 
@@ -44,14 +47,20 @@ and the client polls; each poll also *recovers* a task (settles it from `GET /v1
 
 | Path | What |
 |---|---|
-| `lib/harnessrouter.ts` | HarnessRouter Cloud client (vendored from the official skill, Apache-2.0). SSE/background, files, signed previews. Server-only. |
-| `lib/service.ts` | The feature's server logic: start/continue a task, poll+settle, sanitize results. Holds the harness_id. |
+| `lib/harnessrouter.ts` | HarnessRouter Cloud client (vendored from the official skill, Apache-2.0). SSE/background, file uploads, signed previews. Server-only. |
+| `lib/service.ts` | The feature's server logic: start/continue a task, attach repo archives, poll+settle, live progress, findings, sanitize results. Holds the harness_id. |
+| `lib/github.ts` | SSRF-safe GitHub repo archive fetch (codeload tar.gz, 25 MB cap, gzip check; `git clone --depth 1` fallback for networks that block GitHub HTTP). |
+| `lib/samples*.ts` | Three bundled, real Sentinel reports served read-only so visitors can explore a finished report instantly. |
 | `lib/task-store.ts` | Per-user task records. In-memory for dev; TiDB Serverless (MySQL) or Vercel KV / Upstash in production (auto-selected by env). |
 | `lib/session.ts` | The product `user` id: a signed, httpOnly cookie set by the server. |
 | `lib/secrets.ts` | Stable cookie / preview-signing secrets. |
 | `app/api/tasks/*` | Start, list, poll/detail, continue, download routes. |
+| `app/api/samples/*`, `app/sample-preview/*` | Read-only sample report detail, downloads and preview. |
 | `app/preview/[token]/[[...path]]/*` | Signed, sandboxed HTML report preview. |
-| `app/page.tsx` | The UI (input, polling progress, report preview, downloads, follow-ups, history). |
+| `app/page.tsx` | Client orchestrator: scans, polling, follow-up thread, samples. |
+| `app/_ui/*` | UI components: command bar (paste / drop files / GitHub URL), live scan progress, report (grade, severity tiles, findings, full report, files), follow-up replies, sidebar. |
+| `shared/*` | Isomorphic, dependency-free logic used by server and UI: types, findings normalization + security grade, tool-activity labels, safe Markdown parser, GitHub URL parsing. |
+| `tests/*` | `node --test` suites: adapter, product, shared. |
 | `harnessrouter.json` | The reviewed copy of the harness config (id, name, base, model, instructions). Committed. |
 | `harness-instructions.txt` | Editable source of the harness's standing instructions. |
 | `.agents/skills/harnessrouter/` | The HarnessRouter integration skill (reference + scripts), vendored for later changes. |
@@ -92,7 +101,7 @@ and the client polls; each poll also *recovers* a task (settles it from `GET /v1
 5. **Test**
 
    ```bash
-   pnpm test     # adapter + product unit tests (node --test)
+   pnpm test     # adapter, product and shared unit tests (node --test)
    pnpm build    # type-check + production build
    ```
 
@@ -107,9 +116,11 @@ gitignored and not deployed, so production reads the key from the env var):
 | `COOKIE_SECRET` | ✅ | Stable random; else sessions break between invocations. |
 | `PREVIEW_SIGNING_SECRET` | ✅ | 64 hex chars; else preview links break between invocations. |
 | `DATABASE_URL` (TiDB Serverless) **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN` | ▲ recommended | Durable task store. TiDB Serverless (MySQL-compatible, HTTP serverless driver) is preferred; Vercel KV / Upstash also supported. Without one, task records are in-memory and won't survive across serverless invocations. `DATABASE_URL` wins if both are set. The `sentinel_tasks` table is auto-created on first use. |
-| `HR_TASK_TIMEOUT_SECONDS` / `HR_TASK_MAX_STEP` / `HR_TASK_MAX_COST_USD` | optional | Per-task budget ceilings (defaults 1200 / 120 / 3). |
+| `HR_TASK_TIMEOUT_SECONDS` / `HR_TASK_MAX_STEP` / `HR_TASK_MAX_COST_USD` | optional | Per-task budget ceilings (defaults 3600 / 200 / 4; thorough repo reviews on `qwen3.8-max` take 15–20 min). |
 
-pnpm is auto-detected from `pnpm-lock.yaml`. See `.env.example`.
+pnpm is auto-detected from `pnpm-lock.yaml`. See `.env.example`. `POST /api/tasks` sets
+`maxDuration = 60` because a repo scan downloads and uploads the archive before the task starts; the
+function needs outbound HTTPS to `codeload.github.com` (Vercel allows this by default).
 
 ## Security model
 
@@ -123,6 +134,12 @@ pnpm is auto-detected from `pnpm-lock.yaml`. See `.env.example`.
   server-side.
 - The task's `user` is set by the server from the session, never from user input, so one person's
   (future) memory never reaches another's task.
+- GitHub URLs are parsed with strict allowlist patterns (owner, repo, ref, sub-path; no `..`, no
+  leading `-`) and the fetch URL is rebuilt server-side for GitHub only. Redirects must stay on
+  GitHub, and archives are size-capped and gzip-checked. The `git` fallback uses `execFile`
+  (no shell) with validated arguments.
+- The live activity feed exposes tool *names* mapped to fixed labels, never arguments or output.
+  Agent Markdown is rendered without raw HTML and with `http(s)`-only links.
 
 ## Changing the harness
 
