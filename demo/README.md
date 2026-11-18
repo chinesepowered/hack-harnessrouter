@@ -10,4 +10,4 @@
 
 Voiceover is ElevenLabs voice "Jessica" (not a sponsor; used for the voiceover and music bed only).
 Everything shown in the UI is produced by the app in this repo talking to HarnessRouter: live
-`qwen3.8-max` runs on the public `we45/Vulnerable-Flask-App` repository.
+`qwen3.8-max` runs on the public `we45/Vulnerable-Flask-App` repository and on a pasted invoice API.
