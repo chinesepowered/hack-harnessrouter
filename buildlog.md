@@ -5,9 +5,10 @@ real numbers from our agent runs, what broke and how we fixed it, and candid fee
 HarnessRouter itself. Everything here comes from the actual build: the session history, git log,
 and the HarnessRouter API responses for our runs.
 
-- **Product:** Sentinel, an agentic security analyst. Paste code, drop in files, or paste a GitHub
-  repo. A sandboxed agent audits it and returns a graded, triaged findings report with fixes, and
-  you can ask the same agent for the hardened code.
+- **Product:** Sentinel, an agentic security analyst that does what Claude Code and Codex won't:
+  find security issues and hunt bug bounties. Paste code, drop in files, or paste a GitHub repo. A
+  sandboxed agent audits it and returns a graded, triaged findings report with fixes, and you can
+  ask the same agent for the hardened code.
 - **Agent backend:** one HarnessRouter harness, `Security Analyst`
   (`chrn_01a74a33efe94123a15d3d8958abe16d`), base `qwen` (Qwen Code CLI), model `qwen3.8-max`,
   Workspace *Default Workspace*.

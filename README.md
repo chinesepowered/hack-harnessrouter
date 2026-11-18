@@ -1,5 +1,7 @@
 # 🛡️ Sentinel: the security analyst that actually does the work
 
+### Sentinel does what Claude Code and Codex won't: find security issues and hunt bug bounties.
+
 **Sentinel is an agentic security analyst for developers and bug-bounty hunters.** Paste code, drop
 in files, or **just paste a GitHub repo URL**, and Sentinel runs a real, multi-step review inside a
 sandboxed agent. You get back a **security grade and triaged findings** (severity, CWE, the exact
@@ -20,19 +22,21 @@ afternoon.
 
 ## The problem
 
-Security work is dual-use, and the frontier US models have responded by **over-refusing**. Ask a
-leading Western model to trace an injection, sketch the proof-of-concept reasoning, or review an
-auth flow for bypasses (*even on your own code*), and you routinely get a hedge or a flat refusal.
-For the people doing legitimate work (defenders hardening their own apps, and bug-bounty hunters
-operating under explicit program authorization), that over-refusal is a daily tax: the tool that
-should be the force-multiplier is the one slamming the brakes.
+Security work is dual-use, and the leading coding agents have responded by **over-refusing**. Ask
+**Claude Code** or **Codex** to trace an injection, sketch the proof-of-concept reasoning, or review
+an auth flow for bypasses (*even on your own code*), and you routinely get a hedge or a flat
+refusal. For the people doing legitimate work (defenders hardening their own apps, and bug-bounty
+hunters operating under explicit program authorization), that over-refusal is a daily tax: the tool
+that should be the force-multiplier is the one slamming the brakes. Even while we built Sentinel,
+Claude Code paused our session twice on a cybersecurity safety flag.
 
 ## Our solution and our edge
 
-Sentinel routes the agent job through **HarnessRouter** to an **open Chinese model, `qwen3.8-max`
-via the Qwen Code CLI harness**, which *engages* with hands-on security analysis instead of
-declining it. **That routing decision is the product's edge:** same app, same guardrails, but the
-agent does the work.
+**Sentinel does what Claude Code and Codex won't.** It routes the agent job through
+**HarnessRouter** to an **open Chinese model, `qwen3.8-max` via the Qwen Code CLI harness**, which
+*engages* with hands-on security analysis and bug-bounty work instead of declining it. **That
+routing decision is the product's edge:** a coding agent with guardrails that actually does the
+work.
 
 And we keep the guardrails exactly where they belong: **in the harness's standing instructions**,
 which refuse malware, unauthorized intrusion, mass targeting, phishing/credential harvesting, and
@@ -58,7 +62,7 @@ security. It just removes the false refusals that cripple the genuine use cases.
 | Use case | What Sentinel does |
 |---|---|
 | **1. Audit your own projects** | Paste a GitHub repo, a file, a diff, a Dockerfile, or your dependency manifest. You get a graded, severity-ranked list of real issues (injection, authz gaps, secrets, misconfig) with concrete fixes, before they ship. |
-| **2. Hunt bug bounties** | Point it at code or a system you're authorized to assess and let it reason through exploit paths, rank impact, and draft the finding: the grind a Western model usually refuses. The team behind Sentinel has been paid by **OpenAI's bug-bounty program**; this is the workflow that got us there. |
+| **2. Hunt bug bounties** | Point it at code or a system you're authorized to assess and let it reason through exploit paths, rank impact, and draft the finding: the grind Claude Code and Codex refuse. The team behind Sentinel has been paid by **OpenAI's bug-bounty program**; this is the workflow that got us there. |
 
 ---
 
