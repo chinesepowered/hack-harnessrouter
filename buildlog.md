@@ -40,6 +40,7 @@ and the HarnessRouter API responses for our runs.
 | 19:00-20:06 | New UI: command bar with GitHub URL detection, a live scan view fed by session turns, a report with an A-F grade, severity tiles and finding cards, the full report, files, one-click next steps and a follow-up thread. Repo scanning uploads the archive with `POST /v1/files` and attaches it as an `input_file`. |
 | 20:00 | A repo follow-up failed after 38 minutes with `provider_error`. We used it to fix our failure UX (details below). |
 | 20:06-20:45 | Merged the team's style pass (no em dashes), re-recorded the demo on the final build, generated captions from narration word timings, and shipped the video. |
+| 20:47 | A second repo follow-up failed at 33.8 minutes with the same `provider_error`. This time the new failure UX handled it as designed: a plain message and a **Try again** button. |
 
 ---
 
@@ -74,7 +75,8 @@ Durations are from turn timestamps. Spend is what `GET /v1/sessions/{id}` report
 | ↳ follow-up: hardened code | same session | 23.7 min | 545-line drop-in, 41-test suite, 87 offline assertions passed | 135k / 60k / 3.4M | (included above) |
 | `we45/Vulnerable-Flask-App` audit #1 | GitHub repo | 16.4 min | 20 findings, 5 Critical | 89k / 38k / 1.9M | $4.03 for both turns |
 | ↳ follow-up: hardened code | same session | failed at 38.3 min | `provider_error` | 208k / 92k / 8.7M | (included above) |
-| `we45/Vulnerable-Flask-App` audit #2 | GitHub repo | 25.5 min | 24 findings, 6 Critical, PoCs reproduced in the sandbox | 141k / 55k / 3.6M | $3.29 so far, with its follow-up still running |
+| `we45/Vulnerable-Flask-App` audit #2 | GitHub repo | 25.5 min | 24 findings, 6 Critical, PoCs reproduced in the sandbox | 141k / 55k / 3.6M | $4.05 for both turns |
+| ↳ follow-up: hardened code | same session | failed at 33.8 min | `provider_error` | 207k / 79k / 6.6M | (included above) |
 | Audit #3 | GitHub repo | cancelled at ~7 min | used for the live-feed shot | n/a | n/a |
 
 What this taught us about the product:
@@ -82,6 +84,9 @@ What this taught us about the product:
   sandboxed proof-of-concept testing is roughly $1-2. Writing a full hardened version plus tests is
   the most expensive step. The per-turn figures are estimated from token shares, because spend is
   only reported per session.
+- **Long follow-ups are fragile.** Writing a complete hardened version plus tests ran 24-38 minutes,
+  and two of three such runs hit provider errors. In production we'd scope them smaller (one file
+  or one finding at a time) and give them a tighter time budget.
 - **Duration.** A task takes 4-26 minutes, so background mode is the only sane design on serverless,
   and the UI must make waiting feel productive (live activity, "you can leave this page").
 - **Real work in the sandbox.** The agent ran the target code there: it rendered `{{7*7}}` as 49 to
@@ -135,10 +140,13 @@ What this taught us about the product:
 
 ### Friction and suggestions (most important first)
 
-1. **Long runs can fail with no recovery.** One follow-up died at minute 38 with `provider_error`
-   ("Your model's provider failed during this task. Nothing was retried elsewhere. Try again."). The
-   files it wrote stayed in the session, but the turn is just `failed`. We could not tell which
-   step failed or how much of the session's spend it consumed. Suggestions:
+1. **Long runs can fail with no recovery.** Two of our three "hardened code" follow-ups died with
+   `provider_error` ("Your model's provider failed during this task. Nothing was retried elsewhere.
+   Try again."). They were also our longest runs: 33.8 and 38.3 minutes, about 200k input and
+   6.6-8.7M cache-read tokens each. The one that finished took 23.7 minutes. That pattern suggests
+   very long turns are fragile on this base and model. The files each run wrote stayed in the
+   session, but the turn is just `failed`. We could not tell which step failed, or how much of
+   the session's spend (about $2-3 of a $4 session) went to the failed turn. Suggestions:
    - transparent retry or failover for transient provider errors;
    - or a resume of a failed turn from its last completed step;
    - and the failing step, the spend so far and a retryable hint on the error object.
