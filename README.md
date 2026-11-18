@@ -74,10 +74,12 @@ reviewer that actually does it.
 | **Security teams & agencies** | First-pass triage and review at a fraction of an analyst's hourly cost; humans focus on the judgment calls. |
 | **Bug-bounty hunters** | One accepted finding is worth hundreds to thousands, so a subscription pays for itself on the first hit. |
 
-**Unit economics.** A full agentic review costs **~$0.20-0.50** through HarnessRouter (with per-task
-budget caps), so Sentinel runs comfortably as **per-seat SaaS** (e.g. ~$29/mo) *or* **metered
-per-scan** with a free tier. Margins stay healthy either way, and HarnessRouter's per-task cost + budget
-ceilings make them predictable.
+**Unit economics.** Measured on our real runs (session spend as reported by HarnessRouter), a
+single-file or config review costs about **$0.50-0.75**, and a whole-repo audit with sandboxed
+proof-of-concept testing about **$1-2**. Per-task budgets (time, steps and dollars) cap the worst
+case. That supports **per-seat SaaS with a scan quota** (e.g. ~$29/mo) *or* **metered per-scan**
+pricing with a free tier, and HarnessRouter's per-task cost ceilings keep margins predictable. The
+run-by-run numbers are in [buildlog.md](buildlog.md).
 
 **Moat / why us**
 - **The "willing-model" routing is a config advantage competitors avoid.** Defaulting to models
@@ -209,3 +211,4 @@ Full setup, environment variables, and Vercel deployment are in **[DEVELOPMENT.m
 
 - **Harness ID:** `chrn_01a74a33efe94123a15d3d8958abe16d` · base `qwen` · model `qwen3.8-max` · Workspace *Default Workspace*
 - **Demo video:** [`demo/sentinel-demo.mp4`](demo/sentinel-demo.mp4) (about 2 min). It shows real screen recordings of a live GitHub repo scan: paste the repo, watch the agent work, explore the graded report, and get the fixed code as a follow-up.
+- **Build log:** [`buildlog.md`](buildlog.md): the timeline, real run costs and durations, problems we hit, and our feedback on HarnessRouter.
