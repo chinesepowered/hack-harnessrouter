@@ -7,6 +7,9 @@
   for the fixed code.
 - **`sentinel-ui-walkthrough.mp4`**: the raw, silent screen recordings of the same UI, uncut and
   at real speed.
+- **`sentinel-trailer.mp4`**: a 30-second cyberpunk trailer (1080p, with sound). Three 10-second shots
+  generated with Wan 3.0 Prime via TokenRouter, cut together with title cards: an engineer under
+  attack asks Claude for help and is refused, switches to Sentinel, and Sentinel defends his systems.
 - **`thumbnail.jpg`**: the video thumbnail (1280x720), also used in the main README.
 - **`script.md`**: the narration script, scene by scene.
 

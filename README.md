@@ -15,6 +15,7 @@ authorized to test, instead of refusing.
 [![Sentinel demo video: click to watch on YouTube](demo/thumbnail.jpg)](https://www.youtube.com/watch?v=wMiJcJywn8Q)
 
 **▶ [Watch the 2-minute demo on YouTube](https://www.youtube.com/watch?v=wMiJcJywn8Q)** (real screen recordings of a live repo audit)
+· [30-second trailer](demo/sentinel-trailer.mp4)
 
 ## At a glance
 
@@ -262,4 +263,5 @@ Full setup, environment variables, and Vercel deployment are in **[DEVELOPMENT.m
 
 - **Harness ID:** `chrn_01a74a33efe94123a15d3d8958abe16d` · base `qwen` · model `qwen3.8-max` · Workspace *Default Workspace*
 - **Demo video:** [on YouTube](https://www.youtube.com/watch?v=wMiJcJywn8Q), or in the repo as [`demo/sentinel-demo.mp4`](demo/sentinel-demo.mp4) (about 2 min). It shows real screen recordings of a live GitHub repo scan: paste the repo, watch the agent work, explore the graded report, and get the fixed code as a follow-up.
+- **Trailer:** [`demo/sentinel-trailer.mp4`](demo/sentinel-trailer.mp4), a 30-second cinematic cut of the story (generated with Wan 3.0 Prime).
 - **Build log:** [`buildlog.md`](buildlog.md): the timeline, real run costs and durations, problems we hit, and our feedback on HarnessRouter.
