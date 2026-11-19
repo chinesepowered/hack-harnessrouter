@@ -1,4 +1,4 @@
-# 🛡️ Sentinel: the security analyst that actually does the work
+# Sentinel: the security analyst that actually does the work
 
 ### Sentinel does what Claude Code and Codex won't: find security issues and hunt bug bounties.
 
