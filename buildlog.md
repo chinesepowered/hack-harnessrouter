@@ -44,6 +44,7 @@ and the HarnessRouter API responses for our runs.
 | 20:06-20:45 | Merged the team's style pass (no em dashes), re-recorded the demo on the final build, generated captions from narration word timings, and shipped the video. |
 | 20:47 | A second repo follow-up failed at 33.8 minutes with the same `provider_error`. This time the new failure UX handled it as designed: a plain message and a **Try again** button. |
 | Day 2 | Made a 30-second cinematic trailer from three 10-second Wan 3.0 Prime shots (via TokenRouter). The final shot was rejected four times by the video provider's output content check until we dropped the close-up of the character's face. |
+| Day 3 | Cut a tighter 1:36 pitch video for the finals: the cinematic shots as a cold open, a match cut into real screen recordings, and new narration built around "Sentinel does what Claude Code and Codex won't". |
 
 ---
 

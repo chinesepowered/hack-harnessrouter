@@ -1,5 +1,8 @@
 # Demo assets
 
+- **`sentinel-pitch-v2.mp4`** (recommended): the 1:36 pitch video. A cinematic cold open (Wan 3.0 Prime)
+  match-cuts into real screen recordings of a live repo audit, then the HarnessRouter and business beats.
+  Narration and shots are in [`script-v2.md`](script-v2.md).
 - **`sentinel-demo.mp4`**: the narrated demo, also [on YouTube](https://www.youtube.com/watch?v=wMiJcJywn8Q) (about 2 minutes, 1080p,
   captions burned in). Pitch
   cards plus real screen recordings of the product: paste a GitHub repo, watch the agent's live
