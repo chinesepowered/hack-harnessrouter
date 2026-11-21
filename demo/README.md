@@ -1,5 +1,8 @@
 # Demo assets
 
+- **`sentinel-pitch-full.mp4`** (2:24, the finals cut): the 30-second trailer, then the real problem,
+  the live repo audit, the agent proving its own fix, why it works (and its guardrails), HarnessRouter, the business,
+  and the end card. Its extra narration is listed at the bottom of [`script-v2.md`](script-v2.md).
 - **`sentinel-pitch-v2.mp4`** (recommended): the 1:36 pitch video. A cinematic cold open (Wan 3.0 Prime)
   match-cuts into real screen recordings of a live repo audit, then the HarnessRouter and business beats.
   Narration and shots are in [`script-v2.md`](script-v2.md).

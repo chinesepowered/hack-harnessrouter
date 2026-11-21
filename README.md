@@ -15,7 +15,7 @@ authorized to test, instead of refusing.
 [![Sentinel demo video: click to watch on YouTube](demo/thumbnail.jpg)](https://www.youtube.com/watch?v=wMiJcJywn8Q)
 
 **▶ [Watch the 2-minute demo on YouTube](https://www.youtube.com/watch?v=wMiJcJywn8Q)** (real screen recordings of a live repo audit)
-· [1:36 pitch video, v2](demo/sentinel-pitch-v2.mp4) · [30-second trailer](demo/sentinel-trailer.mp4)
+· [2:24 full cut](demo/sentinel-pitch-full.mp4) · [1:36 pitch video, v2](demo/sentinel-pitch-v2.mp4) · [30-second trailer](demo/sentinel-trailer.mp4)
 
 ## At a glance
 
